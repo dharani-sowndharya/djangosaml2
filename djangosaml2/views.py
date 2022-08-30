@@ -276,6 +276,7 @@ def assertion_consumer_service(request,
     djangosaml2.backends.Saml2Backend that should be
     enabled in the settings.py
     """
+    attribute_mapping = {'uid': ('username', ), 'mail': ('email', )}
     attribute_mapping = attribute_mapping or get_custom_setting('SAML_ATTRIBUTE_MAPPING', {'uid': ('username', )})
     create_unknown_user = create_unknown_user if create_unknown_user is not None else \
                           get_custom_setting('SAML_CREATE_UNKNOWN_USER', True)
@@ -327,13 +328,18 @@ def assertion_consumer_service(request,
 
     # authenticate the remote user
     session_info = response.session_info()
-
+    print("**************************************************")
+    print(attribute_mapping)
+    print("**************************************************")
     if callable(attribute_mapping):
         attribute_mapping = attribute_mapping()
     if callable(create_unknown_user):
         create_unknown_user = create_unknown_user()
 
     logger.debug('Trying to authenticate the user. Session info: %s', session_info)
+    print("**************************************************")
+    print(attribute_mapping)
+    print("**************************************************")
     user = auth.authenticate(request=request,
                              session_info=session_info,
                              attribute_mapping=attribute_mapping,
