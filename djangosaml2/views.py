@@ -276,7 +276,8 @@ def assertion_consumer_service(request,
     djangosaml2.backends.Saml2Backend that should be
     enabled in the settings.py
     """
-    attribute_mapping = {'uid': ('username', ), 'mail': ('email', )}
+    #attribute_mapping = {'uid': ('username', ), 'mail': ('email', )}
+    attribute_mapping = { 'uid': ('username', ), 'mail': ('email', ),'cn': ('first_name', ), 'sn': ('last_name', ),}
     attribute_mapping = attribute_mapping or get_custom_setting('SAML_ATTRIBUTE_MAPPING', {'uid': ('username', )})
     create_unknown_user = create_unknown_user if create_unknown_user is not None else \
                           get_custom_setting('SAML_CREATE_UNKNOWN_USER', True)
@@ -344,15 +345,18 @@ def assertion_consumer_service(request,
                              session_info=session_info,
                              attribute_mapping=attribute_mapping,
                              create_unknown_user=create_unknown_user)
+    logger.info("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@")
+    logger.info(session_info)
+    logger.info("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@")
     if user is None:
         logger.warning("Could not authenticate user received in SAML Assertion. Session info: %s", session_info)
         raise PermissionDenied
 
     auth.login(request, user)
     _set_subject_id(request.session, session_info['name_id'])
-    logger.debug("User %s authenticated via SSO.", user)
+    logger.info("User %s authenticated via SSO.", user)
 
-    logger.debug('Sending the post_authenticated signal')
+    logger.info('Sending the post_authenticated signal')
     post_authenticated.send_robust(sender=user, session_info=session_info)
 
     # redirect the user to the view where he came from
@@ -364,7 +368,7 @@ def assertion_consumer_service(request,
         relay_state = default_relay_state
     if not is_safe_url_compat(url=relay_state, allowed_hosts={request.get_host()}):
         relay_state = settings.LOGIN_REDIRECT_URL
-    logger.debug('Redirecting to the RelayState: %s', relay_state)
+    logger.info('Redirecting to the RelayState: %s', relay_state)
     return HttpResponseRedirect(relay_state)
 
 
