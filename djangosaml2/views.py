@@ -328,18 +328,18 @@ def assertion_consumer_service(request,
 
     # authenticate the remote user
     session_info = response.session_info()
-    print("**************************************************")
-    print(attribute_mapping)
-    print("**************************************************")
+    logger.info("**************************************************")
+    logger.info(attribute_mapping)
+    logger.info("**************************************************")
     if callable(attribute_mapping):
         attribute_mapping = attribute_mapping()
     if callable(create_unknown_user):
         create_unknown_user = create_unknown_user()
 
     logger.debug('Trying to authenticate the user. Session info: %s', session_info)
-    print("**************************************************")
-    print(attribute_mapping)
-    print("**************************************************")
+    logger.info("**************************************************")
+    logger.info(attribute_mapping)
+    logger.info("**************************************************")
     user = auth.authenticate(request=request,
                              session_info=session_info,
                              attribute_mapping=attribute_mapping,

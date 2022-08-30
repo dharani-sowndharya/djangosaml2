@@ -62,9 +62,9 @@ def get_saml_user_model():
 class Saml2Backend(ModelBackend):
     def authenticate(self, request, session_info=None, attribute_mapping=None,
                      create_unknown_user=True, **kwargs):
-        print("**************************************************")
-        print(attribute_mapping)
-        print("**************************************************")
+        logger.info("**************************************************")
+        logger.info(attribute_mapping)
+        logger.info("**************************************************")
         if session_info is None or attribute_mapping is None:
             logger.info('Session info or attribute mapping are None')
             return None
