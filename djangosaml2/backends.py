@@ -173,55 +173,55 @@ class Saml2Backend(ModelBackend):
         return {lookup: main_attribute}
 
     def get_saml2_user(self, create, main_attribute, attributes, attribute_mapping):
-        logger.debug("get_saml2_user function")
-        logger.debug(self)
-        logger.debug(create)
-        logger.debug(main_attribute) 
-        logger.debug(attributes)
-        logger.debug(attribute_mapping)
-        logger.debug("get_saml2_user function-end")
+        logger.info("get_saml2_user function")
+        logger.info(self)
+        logger.info(create)
+        logger.info(main_attribute) 
+        logger.info(attributes)
+        logger.info(attribute_mapping)
+        logger.info("get_saml2_user function-end")
         if create:
             return self._get_or_create_saml2_user(main_attribute, attributes, attribute_mapping)
 
         return self._get_saml2_user(main_attribute, attributes, attribute_mapping)
 
     def _get_or_create_saml2_user(self, main_attribute, attributes, attribute_mapping):
-        logger.debug('Check if the user "%s" exists or create otherwise',
+        logger.info('Check if the user "%s" exists or create otherwise',
                      main_attribute)
         django_user_main_attribute = self.get_django_user_main_attribute()
-        logger.debug("django_user_main_attribute")
-        logger.debug(django_user_main_attribute)
+        logger.info("django_user_main_attribute")
+        logger.info(django_user_main_attribute)
         user_query_args = self.get_user_query_args(main_attribute)
-        logger.debug("user_query_args")
-        logger.debug(user_query_args)
+        logger.info("user_query_args")
+        logger.info(user_query_args)
         user_create_defaults = {django_user_main_attribute: main_attribute}
-        logger.debug("user_create_defaults")
-        logger.debug(user_create_defaults)
+        logger.info("user_create_defaults")
+        logger.info(user_create_defaults)
 
         User = get_saml_user_model()
         try:
             user, created = User.objects.get_or_create(
                 defaults=user_create_defaults, **user_query_args)
-            logger.debug("user")
-            logger.debug(user)  
+            logger.info("user")
+            logger.info(user)  
             
-            logger.debug("created")
-            logger.debug(created)    
+            logger.info("created")
+            logger.info(created)    
         except MultipleObjectsReturned:
             logger.error("There are more than one user with %s = %s",
                          django_user_main_attribute, main_attribute)
             return None
 
         if created:
-            logger.debug('New user created')
+            logger.info('New user created')
             user = self.configure_user(user, attributes, attribute_mapping)
-            logger.debug("user")
-            logger.debug(user)    
+            logger.info("user")
+            logger.info(user)    
         else:
-            logger.debug('User updated')
+            logger.info('User updated')
             user = self.update_user(user, attributes, attribute_mapping)
-            logger.debug("user")
-            logger.debug(user) 
+            logger.info("user")
+            logger.info(user) 
         return user
 
     def _get_saml2_user(self, main_attribute, attributes, attribute_mapping):
@@ -229,7 +229,7 @@ class Saml2Backend(ModelBackend):
         django_user_main_attribute = self.get_django_user_main_attribute()
         user_query_args = self.get_user_query_args(main_attribute)
 
-        logger.debug('Retrieving existing user "%s"', main_attribute)
+        logger.info('Retrieving existing user "%s"', main_attribute)
         try:
             user = User.objects.get(**user_query_args)
             user = self.update_user(user, attributes, attribute_mapping)
