@@ -259,6 +259,10 @@ class Saml2Backend(ModelBackend):
         SAML_ATTRIBUTE_MAPPING. For each attribute, if the user object has
         that field defined it will be set.
         """
+        logger.info("user")
+        logger.info(user)
+        logger.info("attributes")
+        logger.info(attributes)
         if not attribute_mapping:
             return user
         logger.info("attribute_mapping -update_user ")
@@ -279,6 +283,7 @@ class Saml2Backend(ModelBackend):
                 continue
 
             for attr in django_attrs:
+                logger.info(vars(user))
                 if hasattr(user, attr):
                     user_attr = getattr(user, attr)
                     logger.info("user_attr")
