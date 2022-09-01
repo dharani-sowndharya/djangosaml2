@@ -76,8 +76,8 @@ class Saml2Backend(ModelBackend):
         if 'ava' not in session_info:
             logger.error('"ava" key not found in session_info')
             return None
-        logger.debug("session_info")
-        logger.debug(session_info)
+        logger.info("session_info")
+        logger.info(session_info)
         attributes = self.clean_attributes(session_info['ava'])
         logger.info("Attributes : ")
         logger.info(attributes)
