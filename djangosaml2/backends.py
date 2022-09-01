@@ -273,7 +273,7 @@ class Saml2Backend(ModelBackend):
             logger.info("saml_attr")
             logger.info(saml_attr)
             if not attr_value_list:
-                logger.debug(
+                logger.info(
                     'Could not find value for "%s", not updating fields "%s"',
                     saml_attr, django_attrs)
                 continue
@@ -294,10 +294,10 @@ class Saml2Backend(ModelBackend):
                     logger.info("user_modified")
                     logger.info(user_modified)
                 else:
-                    logger.debug(
+                    logger.info(
                         'Could not find attribute "%s" on user "%s"', attr, user)
 
-        logger.debug('Sending the pre_save signal')
+        logger.info('Sending the pre_save signal')
         signal_modified = any(
             [response for receiver, response
              in pre_user_save.send_robust(sender=user.__class__,
@@ -316,10 +316,13 @@ class Saml2Backend(ModelBackend):
 
         Return True if the attribute was changed and False otherwise.
         """
+        logger.info("set_attribute")
+        logger.info(attr)
+        logger.info(value)
         field = obj._meta.get_field(attr)
         if field.max_length is not None and len(value) > field.max_length:
             cleaned_value = value[:field.max_length]
-            logger.warn('The attribute "%s" was trimmed from "%s" to "%s"',
+            logger.info('The attribute "%s" was trimmed from "%s" to "%s"',
                         attr, value, cleaned_value)
         else:
             cleaned_value = value
