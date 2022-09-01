@@ -276,8 +276,8 @@ def assertion_consumer_service(request,
     djangosaml2.backends.Saml2Backend that should be
     enabled in the settings.py
     """
-    #attribute_mapping = {'uid': ('username', ), 'mail': ('email', )}
-    attribute_mapping = { 'uid': ('username', ), 'mail': ('email', ),'cn': ('first_name', ), 'sn': ('last_name', ),}
+    # attribute_mapping = {'uid': ('username', ), 'mail': ('email', )}
+    # attribute_mapping = { 'uid': ('username', ), 'mail': ('email', ),'cn': ('first_name', ), 'sn': ('last_name', ),}
     attribute_mapping = attribute_mapping or get_custom_setting('SAML_ATTRIBUTE_MAPPING', {'uid': ('username', )})
     create_unknown_user = create_unknown_user if create_unknown_user is not None else \
                           get_custom_setting('SAML_CREATE_UNKNOWN_USER', True)
@@ -346,7 +346,7 @@ def assertion_consumer_service(request,
                              attribute_mapping=attribute_mapping,
                              create_unknown_user=create_unknown_user)
     logger.info("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@")
-    logger.info(session_info)
+    logger.info(user)
     logger.info("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@")
     if user is None:
         logger.warning("Could not authenticate user received in SAML Assertion. Session info: %s", session_info)
