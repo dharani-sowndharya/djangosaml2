@@ -51,6 +51,8 @@ def get_model(model_path):
 def get_saml_user_model():
     try:
         # djangosaml2 custom user model
+        logger.debug("get_saml_user_model")
+        logger.debug(get_model(settings.SAML_USER_MODEL))
         return get_model(settings.SAML_USER_MODEL)
     except AttributeError:
         try:
@@ -76,13 +78,18 @@ class Saml2Backend(ModelBackend):
             return None
 
         attributes = self.clean_attributes(session_info['ava'])
+        logger.info("Attributes : ")
+        logger.info(attributes)
         if not attributes:
             logger.error('The attributes dictionary is empty')
 
         use_name_id_as_username = getattr(
             settings, 'SAML_USE_NAME_ID_AS_USERNAME', False)
-
+        logger.info("use_name_id_as_username:")
+        logger.info(use_name_id_as_username)
         django_user_main_attribute = self.get_django_user_main_attribute()
+        logger.info("django_user_main_attribute:")
+        logger.info(django_user_main_attribute)
 
         logger.info('attributes: %s', attributes)
         saml_user = None
@@ -90,12 +97,17 @@ class Saml2Backend(ModelBackend):
             if 'name_id' in session_info:
                 logger.info('name_id: %s', session_info['name_id'])
                 saml_user = session_info['name_id'].text
+                logger.info("saml_user:")
+                logger.info(saml_user)               
             else:
                 logger.info('The nameid is not available. Cannot find user without a nameid.')
         else:
             saml_user = self.get_attribute_value(django_user_main_attribute,
                                                  attributes,
                                                  attribute_mapping)
+            logger.info("saml_user:")
+            logger.info(saml_user)    
+                                            
 
         if saml_user is None:
             logger.info('Could not find saml_user value')
@@ -105,6 +117,8 @@ class Saml2Backend(ModelBackend):
             return None
 
         main_attribute = self.clean_user_main_attribute(saml_user)
+        logger.info("main_attribute:")
+        logger.info(main_attribute)    
 
         # Note that this could be accomplished in one try-except clause, but
         # instead we use get_or_create when creating unknown users since it has
@@ -158,6 +172,13 @@ class Saml2Backend(ModelBackend):
         return {lookup: main_attribute}
 
     def get_saml2_user(self, create, main_attribute, attributes, attribute_mapping):
+        logger.debug("get_saml2_user function")
+        logger.debug(self)
+        logger.debug(create)
+        logger.debug(main_attribute) 
+        logger.debug(attributes)
+        logger.debug(attribute_mapping)
+        logger.debug("get_saml2_user function-end")
         if create:
             return self._get_or_create_saml2_user(main_attribute, attributes, attribute_mapping)
 
@@ -167,13 +188,24 @@ class Saml2Backend(ModelBackend):
         logger.debug('Check if the user "%s" exists or create otherwise',
                      main_attribute)
         django_user_main_attribute = self.get_django_user_main_attribute()
+        logger.debug("django_user_main_attribute")
+        logger.debug(django_user_main_attribute)
         user_query_args = self.get_user_query_args(main_attribute)
+        logger.debug("user_query_args")
+        logger.debug(user_query_args)
         user_create_defaults = {django_user_main_attribute: main_attribute}
+        logger.debug("user_create_defaults")
+        logger.debug(user_create_defaults)
 
         User = get_saml_user_model()
         try:
             user, created = User.objects.get_or_create(
                 defaults=user_create_defaults, **user_query_args)
+            logger.debug("user")
+            logger.debug(user)  
+            
+            logger.debug("created")
+            logger.debug(created)    
         except MultipleObjectsReturned:
             logger.error("There are more than one user with %s = %s",
                          django_user_main_attribute, main_attribute)
@@ -182,9 +214,13 @@ class Saml2Backend(ModelBackend):
         if created:
             logger.debug('New user created')
             user = self.configure_user(user, attributes, attribute_mapping)
+            logger.debug("user")
+            logger.debug(user)    
         else:
             logger.debug('User updated')
             user = self.update_user(user, attributes, attribute_mapping)
+            logger.debug("user")
+            logger.debug(user) 
         return user
 
     def _get_saml2_user(self, main_attribute, attributes, attribute_mapping):
