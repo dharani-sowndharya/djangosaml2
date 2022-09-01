@@ -279,7 +279,7 @@ def assertion_consumer_service(request,
     """
     logger.setLevel(logging.DEBUG)
     # attribute_mapping = {'uid': ('username', ), 'mail': ('email', )}
-    attribute_mapping = { 'uid': ('username', ), 'mail': ('email', ),'cn': ('first_name', ), 'sn': ('last_name', ),}
+    attribute_mapping = { 'uid': ('username', ), 'mail': ('email', ),'cn': ('first_name', ), 'sn': ('sn', ),}
     attribute_mapping = attribute_mapping or get_custom_setting('SAML_ATTRIBUTE_MAPPING', {'uid': ('username', )})
     create_unknown_user = create_unknown_user if create_unknown_user is not None else \
                           get_custom_setting('SAML_CREATE_UNKNOWN_USER', True)
