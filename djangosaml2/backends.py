@@ -261,10 +261,17 @@ class Saml2Backend(ModelBackend):
         """
         if not attribute_mapping:
             return user
-
+        logger.info("attribute_mapping -update_user ")
+        logger.info(attribute_mapping)
         user_modified = False
         for saml_attr, django_attrs in attribute_mapping.items():
             attr_value_list = attributes.get(saml_attr)
+            logger.info("attr_value_list")
+            logger.info(attr_value_list)
+            logger.info("django_attrs")
+            logger.info(django_attrs)
+            logger.info("saml_attr")
+            logger.info(saml_attr)
             if not attr_value_list:
                 logger.debug(
                     'Could not find value for "%s", not updating fields "%s"',
@@ -274,12 +281,18 @@ class Saml2Backend(ModelBackend):
             for attr in django_attrs:
                 if hasattr(user, attr):
                     user_attr = getattr(user, attr)
+                    logger.info("user_attr")
+                    logger.info(user_attr)
                     if callable(user_attr):
                         modified = user_attr(attr_value_list)
+                        logger.info("modified")
+                        logger.info(modified)
                     else:
                         modified = self._set_attribute(user, attr, attr_value_list[0])
 
                     user_modified = user_modified or modified
+                    logger.info("user_modified")
+                    logger.info(user_modified)
                 else:
                     logger.debug(
                         'Could not find attribute "%s" on user "%s"', attr, user)
