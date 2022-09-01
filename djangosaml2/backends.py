@@ -26,6 +26,7 @@ from djangosaml2.signals import pre_user_save
 
 
 logger = logging.getLogger('djangosaml2')
+logger.setLevel(logging.DEBUG)
 
 
 def get_model(model_path):
@@ -62,6 +63,7 @@ def get_saml_user_model():
 class Saml2Backend(ModelBackend):
     def authenticate(self, request, session_info=None, attribute_mapping=None,
                      create_unknown_user=True, **kwargs):
+        logger.setLevel(logging.DEBUG)
         logger.info("**************************************************")
         logger.info(attribute_mapping)
         logger.info("**************************************************")

@@ -68,6 +68,7 @@ from djangosaml2.utils import (
 
 
 logger = logging.getLogger('djangosaml2')
+logger.setLevel(logging.DEBUG)
 
 
 def _set_subject_id(session, subject_id):
@@ -276,8 +277,9 @@ def assertion_consumer_service(request,
     djangosaml2.backends.Saml2Backend that should be
     enabled in the settings.py
     """
+    logger.setLevel(logging.DEBUG)
     # attribute_mapping = {'uid': ('username', ), 'mail': ('email', )}
-    # attribute_mapping = { 'uid': ('username', ), 'mail': ('email', ),'cn': ('first_name', ), 'sn': ('last_name', ),}
+    attribute_mapping = { 'uid': ('username', ), 'mail': ('email', ),'cn': ('first_name', ), 'sn': ('last_name', ),}
     attribute_mapping = attribute_mapping or get_custom_setting('SAML_ATTRIBUTE_MAPPING', {'uid': ('username', )})
     create_unknown_user = create_unknown_user if create_unknown_user is not None else \
                           get_custom_setting('SAML_CREATE_UNKNOWN_USER', True)
@@ -329,6 +331,7 @@ def assertion_consumer_service(request,
 
     # authenticate the remote user
     session_info = response.session_info()
+    logger.setLevel(logging.DEBUG)
     logger.info("**************************************************")
     logger.info(attribute_mapping)
     logger.info("**************************************************")
@@ -338,14 +341,14 @@ def assertion_consumer_service(request,
         create_unknown_user = create_unknown_user()
 
     logger.debug('Trying to authenticate the user. Session info: %s', session_info)
-    logger.info("**************************************************")
+    logger.info("Printing attribute mapping **************************************************")
     logger.info(attribute_mapping)
     logger.info("**************************************************")
     user = auth.authenticate(request=request,
                              session_info=session_info,
                              attribute_mapping=attribute_mapping,
                              create_unknown_user=create_unknown_user)
-    logger.info("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@")
+    logger.info("Printing user: @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@")
     logger.info(user)
     logger.info("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@")
     if user is None:
