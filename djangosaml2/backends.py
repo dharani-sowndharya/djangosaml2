@@ -203,7 +203,7 @@ class Saml2Backend(ModelBackend):
             user, created = User.objects.get_or_create(
                 defaults=user_create_defaults, **user_query_args)
             logger.info("user")
-            logger.info(user)  
+            logger.info(vars(user))  
             
             logger.info("created")
             logger.info(created)    
@@ -216,12 +216,12 @@ class Saml2Backend(ModelBackend):
             logger.info('New user created')
             user = self.configure_user(user, attributes, attribute_mapping)
             logger.info("user")
-            logger.info(user)    
+            logger.info(vars(user))  
         else:
             logger.info('User updated')
             user = self.update_user(user, attributes, attribute_mapping)
             logger.info("user")
-            logger.info(user) 
+            logger.info(vars(user)) 
         return user
 
     def _get_saml2_user(self, main_attribute, attributes, attribute_mapping):
@@ -260,7 +260,7 @@ class Saml2Backend(ModelBackend):
         that field defined it will be set.
         """
         logger.info("user")
-        logger.info(user)
+        logger.info(vars(user))
         logger.info("attributes")
         logger.info(attributes)
         if not attribute_mapping:
