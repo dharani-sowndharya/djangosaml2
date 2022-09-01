@@ -297,6 +297,8 @@ def assertion_consumer_service(request,
 
     try:
         response = client.parse_authn_request_response(xmlstr, BINDING_HTTP_POST, outstanding_queries)
+        logger.info("response")
+        logger.info(response)
     except (StatusError, ToEarly):
         logger.exception("Error processing SAML Assertion.")
         return fail_acs_response(request)
